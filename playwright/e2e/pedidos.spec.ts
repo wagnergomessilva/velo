@@ -3,52 +3,69 @@ import { generateOrderCode } from '../support/helpers'
 
 ///AAA - Arrange, Act, Assert
 
-test('deve consultar um pedido aprovado', async ({ page }) => {
+test.describe('Consulta de pedido', () => {
 
-    //Massa de teste
-    const order = 'VLO-4PXWIM'
 
-    // Arrange
-    await page.goto('http://localhost:5173/')
-    await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
-    await page.getByRole('link', { name: 'Consultar Pedido' }).click();
-    await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
+    test.beforeEach(async ({page}) => {
+        await page.goto('http://localhost:5173/')
+        await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
 
-    // Act
-    //await page.getByTestId('search-order-id').fill('VLO-4PXWIM')
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+        await page.getByRole('link', { name: 'Consultar Pedido' }).click();
+        await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
+    })
+    
+    // test.beforeAll(async () => {
+    //     console.log(
+    //         'beforeAll: roda uma vez antes de todos os testes.'
+    //     )
+    // })
 
-    // Assert
-    const containerPedido = page.getByRole('paragraph')
-        .filter({ hasText: /^Pedido$/ })
-        .locator('..') //Pega o elemento pai do texto "Pedido"
+    // test.afterEach(async () => {
+    //     console.log(
+    //         'afterEach: roda depois de cada teste.'
+    //     )
+    // })
 
-    await expect(containerPedido).toContainText(order, { timeout: 10_000 })
-    await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText(order)
+    // test.afterAll(async () => {
+    //     console.log(
+    //         'afterAll: roda uma vez depois de todos os testes.'
+    //     )
+    // })
 
-    await expect(page.getByText('APROVADO')).toBeVisible()
-    await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText('APROVADO')
+    test('deve consultar um pedido aprovado', async ({ page }) => {
+
+        //Massa de teste
+        const order = 'VLO-4PXWIM'        
+
+        await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
+        await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+
+        // Assert
+        const containerPedido = page.getByRole('paragraph')
+            .filter({ hasText: /^Pedido$/ })
+            .locator('..') //Pega o elemento pai do texto "Pedido"
+
+        await expect(containerPedido).toContainText(order, { timeout: 10_000 })
+        await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText(order)
+
+        await expect(page.getByText('APROVADO')).toBeVisible()
+        await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText('APROVADO')
+    })
+
+    test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
+
+        //Massa de teste
+        const order = generateOrderCode()
+
+        await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
+        await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+
+        await expect(page.locator('#root')).toMatchAriaSnapshot(`
+            - img
+            - heading "Pedido não encontrado" [level=3]
+            - paragraph: Verifique o número do pedido e tente novamente
+            `)
+    })
+
 })
 
-test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
-
-    //Massa de teste
-    const order = generateOrderCode()
-
-    // Arrange
-    await page.goto('http://localhost:5173/')
-    await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
-
-    await page.getByRole('link', { name: 'Consultar Pedido' }).click();
-    await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
-
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-        - img
-        - heading "Pedido não encontrado" [level=3]
-        - paragraph: Verifique o número do pedido e tente novamente
-        `)
-})
