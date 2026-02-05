@@ -6,14 +6,14 @@ import { generateOrderCode } from '../support/helpers'
 test.describe('Consulta de pedido', () => {
 
 
-    test.beforeEach(async ({page}) => {
+    test.beforeEach(async ({ page }) => {
         await page.goto('http://localhost:5173/')
         await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
 
         await page.getByRole('link', { name: 'Consultar Pedido' }).click();
         await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
     })
-    
+
     // test.beforeAll(async () => {
     //     console.log(
     //         'beforeAll: roda uma vez antes de todos os testes.'
@@ -35,21 +35,51 @@ test.describe('Consulta de pedido', () => {
     test('deve consultar um pedido aprovado', async ({ page }) => {
 
         //Massa de teste
-        const order = 'VLO-4PXWIM'        
+        const order = 'VLO-4PXWIM'
 
         await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
         await page.getByRole('button', { name: 'Buscar Pedido' }).click()
 
         // Assert
-        const containerPedido = page.getByRole('paragraph')
-            .filter({ hasText: /^Pedido$/ })
-            .locator('..') //Pega o elemento pai do texto "Pedido"
 
-        await expect(containerPedido).toContainText(order, { timeout: 10_000 })
-        await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText(order)
+        // const containerPedido = page.getByRole('paragraph')
+        //     .filter({ hasText: /^Pedido$/ })
+        //     .locator('..') //Pega o elemento pai do texto "Pedido"
 
-        await expect(page.getByText('APROVADO')).toBeVisible()
-        await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText('APROVADO')
+        // await expect(containerPedido).toContainText(order, { timeout: 10_000 })
+        // await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText(order)
+
+        // await expect(page.getByText('APROVADO')).toBeVisible()
+        // await expect(page.getByTestId('order-result-VLO-4PXWIM')).toContainText('APROVADO')
+
+        await expect(page.getByTestId(`order-result-${order}`)).toMatchAriaSnapshot(`
+            - img
+            - paragraph: Pedido
+            - paragraph: ${order}
+            - img
+            - text: APROVADO
+            - img "Velô Sprint"
+            - paragraph: Modelo
+            - paragraph: Velô Sprint
+            - paragraph: Cor
+            - paragraph: Midnight Black
+            - paragraph: Interior
+            - paragraph: cream
+            - paragraph: Rodas
+            - paragraph: sport Wheels
+            - heading "Dados do Cliente" [level=4]
+            - paragraph: Nome
+            - paragraph: Wagner Gomes
+            - paragraph: Email
+            - paragraph: wag.gomes2015@gmail.com
+            - paragraph: Loja de Retirada
+            - paragraph
+            - paragraph: Data do Pedido
+            - paragraph: /\\d+\\/\\d+\\/\\d+/
+            - heading "Pagamento" [level=4]
+            - paragraph: À Vista
+            - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
+            `);
     })
 
     test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
