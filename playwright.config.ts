@@ -38,7 +38,7 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
 
     //Tempo máximo para ações interativas como clicks, fills, etc.
     // Quando o valor é zero herda o limite do timeout geral do teste.
