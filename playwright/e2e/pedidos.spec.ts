@@ -1,24 +1,13 @@
-import { test } from '@playwright/test'
-
 import { generateOrderCode } from '../support/helpers'
-
-import { LandingPage } from '../support/pages/LandingPage'
-import { Navbar } from '../support/components/NavBar'
-import { OrderLockupPage, OrderDetails } from '../support/pages/OrderLookupPage'
+import { test, OrderDetails } from '../support/fixtures'
 
 test.describe('Consulta de Pedido', () => {
 
-  let orderLockupPage: OrderLockupPage
-
-  test.beforeEach(async ({ page }) => {
-    await new LandingPage(page).goto()
-    await new Navbar(page).orderLockupLink()
-
-    orderLockupPage = new OrderLockupPage(page)
-    await orderLockupPage.validatePageLoaded()
+  test.beforeEach(async ({ app }) => {
+    await app.orderLookup.open()
   })
 
-  test('deve consultar um pedido aprovado', async ({ page }) => {
+  test('deve consultar um pedido aprovado', async ({ app }) => {
 
     const order: OrderDetails = {
       number: 'VLO-6E2J20',
@@ -32,12 +21,12 @@ test.describe('Consulta de Pedido', () => {
       payment: 'À Vista'
     }
     
-    // Assert (detalhes + badge encapsulados no Page Object)
-    await orderLockupPage.assertOrderIsDisplayed(order)
+    // Assert (detalhes + badge encapsulados na action)
+    await app.orderLookup.assertOrderIsDisplayed(order)
 
   })
 
-  test('deve consultar um pedido reprovado', async ({ page }) => {
+  test('deve consultar um pedido reprovado', async ({ app }) => {
 
 
     const order: OrderDetails = {
@@ -52,11 +41,11 @@ test.describe('Consulta de Pedido', () => {
       payment: 'À Vista'
     }
     
-    // Assert (detalhes + badge encapsulados no Page Object)
-    await orderLockupPage.assertOrderIsDisplayed(order)
+    // Assert (detalhes + badge encapsulados na action)
+    await app.orderLookup.assertOrderIsDisplayed(order)
   })
 
-  test('deve consultar um pedido em analise', async ({ page }) => {
+  test('deve consultar um pedido em analise', async ({ app }) => {
 
     // Test Data
     const order: OrderDetails = {
@@ -71,18 +60,16 @@ test.describe('Consulta de Pedido', () => {
       payment: 'À Vista'
     }
     
-    // Assert (detalhes + badge encapsulados no Page Object)
-    await orderLockupPage.assertOrderIsDisplayed(order)
+    // Assert (detalhes + badge encapsulados na action)
+    await app.orderLookup.assertOrderIsDisplayed(order)
   })
 
-  test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
+  test('deve exibir mensagem quando o pedido não é encontrado', async ({ app }) => {
 
     const order = generateOrderCode()
 
-    await orderLockupPage.searchOrder(order)
-
-
-    await orderLockupPage.validateOrderNotFound()
+    await app.orderLookup.searchOrder(order)
+    await app.orderLookup.validateOrderNotFound()
 
   })
 })
