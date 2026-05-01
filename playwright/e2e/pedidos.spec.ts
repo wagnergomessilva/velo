@@ -1,5 +1,5 @@
 import { generateOrderCode } from '../support/helpers'
-import { test, OrderDetails } from '../support/fixtures'
+import { test, expect, OrderDetails } from '../support/fixtures'
 
 test.describe('Consulta de Pedido', () => {
 
@@ -20,14 +20,13 @@ test.describe('Consulta de Pedido', () => {
       },
       payment: 'À Vista'
     }
-    
+
     // Assert (detalhes + badge encapsulados na action)
     await app.orderLookup.assertOrderIsDisplayed(order)
 
   })
 
   test('deve consultar um pedido reprovado', async ({ app }) => {
-
 
     const order: OrderDetails = {
       number: 'VLO-0LNFEA',
@@ -40,7 +39,7 @@ test.describe('Consulta de Pedido', () => {
       },
       payment: 'À Vista'
     }
-    
+
     // Assert (detalhes + badge encapsulados na action)
     await app.orderLookup.assertOrderIsDisplayed(order)
   })
@@ -59,7 +58,7 @@ test.describe('Consulta de Pedido', () => {
       },
       payment: 'À Vista'
     }
-    
+
     // Assert (detalhes + badge encapsulados na action)
     await app.orderLookup.assertOrderIsDisplayed(order)
   })
@@ -72,4 +71,13 @@ test.describe('Consulta de Pedido', () => {
     await app.orderLookup.validateOrderNotFound()
 
   })
+
+  test('deve manter o botão de busca desabilitado com o campo vazio ou apenas espaços', async ({ app }) => {
+    const button = app.orderLookup.elements.searchButton
+    await expect(button).toBeDisabled()
+
+    await app.orderLookup.elements.orderInput.fill('   ')
+    await expect(button).toBeDisabled()
+  })
+
 })
