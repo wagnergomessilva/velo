@@ -1,5 +1,53 @@
 import { generateOrderCode } from '../support/helpers'
 import { test, expect, OrderDetails } from '../support/fixtures'
+import type { Page } from '@playwright/test'
+
+function toMockDbOrder(order: OrderDetails) {
+  const colorMap: Record<OrderDetails['color'], string> = {
+    'Lunar White': 'lunar-white',
+    'Midnight Black': 'midnight-black',
+  }
+
+  const wheelMap: Record<OrderDetails['wheels'], string> = {
+    'aero Wheels': 'aero',
+    'sport Wheels': 'sport',
+  }
+
+  return {
+    id: `mock-${order.number}`,
+    order_number: order.number,
+    color: colorMap[order.color],
+    wheel_type: wheelMap[order.wheels],
+    optionals: [],
+    customer_name: order.customer.name,
+    customer_email: order.customer.email,
+    customer_phone: '11999999999',
+    customer_cpf: '11111111111',
+    payment_method: order.payment === 'À Vista' ? 'avista' : 'financiamento',
+    total_price: 40000,
+    status: order.status,
+    created_at: '2026-05-05T00:00:00.000Z',
+    updated_at: '2026-05-05T00:00:00.000Z',
+  }
+}
+
+async function mockOrderLookup(page: Page, order: OrderDetails) {
+  await page.route('**/rest/v1/orders*', async (route) => {
+    const requestUrl = route.request().url()
+    const encodedOrder = encodeURIComponent(`eq.${order.number}`)
+
+    if (requestUrl.includes(`order_number=${encodedOrder}`)) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(toMockDbOrder(order)),
+      })
+      return
+    }
+
+    await route.continue()
+  })
+}
 
 test.describe('Consulta de Pedido', () => {
 
@@ -7,7 +55,7 @@ test.describe('Consulta de Pedido', () => {
     await app.orderLookup.open()
   })
 
-  test('deve consultar um pedido aprovado', async ({ app }) => {
+  test('deve consultar um pedido aprovado', async ({ app, page }) => {
 
     const order: OrderDetails = {
       number: 'VLO-6E2J20',
@@ -21,12 +69,14 @@ test.describe('Consulta de Pedido', () => {
       payment: 'À Vista'
     }
 
+    await mockOrderLookup(page, order)
+
     // Assert (detalhes + badge encapsulados na action)
     await app.orderLookup.assertOrderIsDisplayed(order)
 
   })
 
-  test('deve consultar um pedido reprovado', async ({ app }) => {
+  test('deve consultar um pedido reprovado', async ({ app, page }) => {
 
     const order: OrderDetails = {
       number: 'VLO-0LNFEA',
@@ -40,11 +90,13 @@ test.describe('Consulta de Pedido', () => {
       payment: 'À Vista'
     }
 
+    await mockOrderLookup(page, order)
+
     // Assert (detalhes + badge encapsulados na action)
     await app.orderLookup.assertOrderIsDisplayed(order)
   })
 
-  test('deve consultar um pedido em analise', async ({ app }) => {
+  test('deve consultar um pedido em analise', async ({ app, page }) => {
 
     // Test Data
     const order: OrderDetails = {
@@ -58,6 +110,8 @@ test.describe('Consulta de Pedido', () => {
       },
       payment: 'À Vista'
     }
+
+    await mockOrderLookup(page, order)
 
     // Assert (detalhes + badge encapsulados na action)
     await app.orderLookup.assertOrderIsDisplayed(order)
