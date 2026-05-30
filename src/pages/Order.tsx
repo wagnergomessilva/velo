@@ -62,8 +62,8 @@ const orderSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   surname: z.string().min(2, 'Sobrenome deve ter pelo menos 2 caracteres'),
   email: z.string().email('Email inválido'),
-  phone: z.string().min(14, 'Telefone inválido'),
-  cpf: z.string().min(14, 'CPF inválido'),
+  phone: z.string().min(14, 'Telefone inválido').refine((val) => !val.includes('_'), 'Telefone inválido'),
+  cpf: z.string().min(14, 'CPF inválido').refine((val) => !val.includes('_'), 'CPF inválido'),
   store: z.string().min(1, 'Selecione uma loja'),
   terms: z.boolean().refine((val) => val === true, 'Aceite os termos'),
 });
@@ -257,7 +257,7 @@ const Order = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Form */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} noValidate className="space-y-8">
               {/* Personal Info */}
               <section className="bg-card rounded-lg p-6 shadow-elegant">
                 <h2 className="font-display text-lg font-semibold mb-6">Dados Pessoais</h2>

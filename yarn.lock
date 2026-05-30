@@ -253,6 +253,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@playwright/mcp@^0.0.75":
+  version "0.0.75"
+  resolved "https://registry.yarnpkg.com/@playwright/mcp/-/mcp-0.0.75.tgz#20f3a1ebf10e032626984d51062e7b0f3468d4cf"
+  dependencies:
+    playwright "1.61.0-alpha-1778188671000"
+    playwright-core "1.61.0-alpha-1778188671000"
+
 "@playwright/test@^1.57.0":
   version "1.57.0"
   resolved "https://registry.npmjs.org/@playwright/test/-/test-1.57.0.tgz"
@@ -2196,11 +2203,23 @@ playwright-core@1.57.0:
   version "1.57.0"
   resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.57.0.tgz"
 
+playwright-core@1.61.0-alpha-1778188671000:
+  version "1.61.0-alpha-1778188671000"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.61.0-alpha-1778188671000.tgz#61c5d07cc7120addefd2b777514e511c073a2dfb"
+
 playwright@1.57.0:
   version "1.57.0"
   resolved "https://registry.npmjs.org/playwright/-/playwright-1.57.0.tgz"
   dependencies:
     playwright-core "1.57.0"
+  optionalDependencies:
+    fsevents "2.3.2"
+
+playwright@1.61.0-alpha-1778188671000:
+  version "1.61.0-alpha-1778188671000"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.61.0-alpha-1778188671000.tgz#c1e9a294b72d553b09702a569cec26d148d00047"
+  dependencies:
+    playwright-core "1.61.0-alpha-1778188671000"
   optionalDependencies:
     fsevents "2.3.2"
 
