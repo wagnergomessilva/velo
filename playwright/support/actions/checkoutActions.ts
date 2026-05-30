@@ -9,6 +9,8 @@ export function createCheckoutActions(page: Page) {
     cpfInput: page.getByLabel('CPF', { exact: true }),
     lojaSelect: page.getByRole('combobox', { name: 'Loja para Retirada' }),
     lojaOption: (name: string) => page.getByRole('option', { name }),
+    paymentAvistaButton: page.getByTestId('payment-avista'),
+    paymentFinanciamentoButton: page.getByTestId('payment-financiamento'),
     termosCheckbox: page.getByLabel(/Li e aceito os Termos/i),
     confirmarButton: page.getByRole('button', { name: 'Confirmar Pedido' }),
 
@@ -53,6 +55,18 @@ export function createCheckoutActions(page: Page) {
     async selectLoja(loja: string) {
       await elements.lojaSelect.click()
       await elements.lojaOption(loja).click()
+    },
+
+    async selectPaymentAvista() {
+      await elements.paymentAvistaButton.click()
+    },
+
+    async selectPaymentFinanciamento() {
+      await elements.paymentFinanciamentoButton.click()
+    },
+
+    async checkTermos() {
+      await elements.termosCheckbox.check()
     },
 
     async submitOrder() {
