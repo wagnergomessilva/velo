@@ -18,27 +18,15 @@ test.describe('Consulta de Pedido', () => {
       customer: {
         name: 'Fernando Papito',
         email: 'papito@velo.dev',
+        document: '780.228.290-05',
+        phone: '(11) 99999-9999',
       },
       payment: '\u00C0 Vista',
+      total_price: '40000',
     }
 
     await deleteOrderByNumber(order.number)
-    await insertOrder({
-      id: crypto.randomUUID(),
-      order_number: order.number,
-      color: 'glacier-blue',
-      wheel_type: 'aero',
-      customer_name: order.customer.name,
-      customer_email: order.customer.email,
-      customer_phone: '(11) 99999-9999',
-      customer_cpf: '780.228.290-05',
-      payment_method: 'avista',
-      total_price: '40000',
-      status: order.status,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      optionals: [],
-    })
+    await insertOrder(order)
 
     await app.orderLookup.searchOrder(order.number)
     await app.orderLookup.validateOrderDetails(order)
@@ -54,27 +42,15 @@ test.describe('Consulta de Pedido', () => {
       customer: {
         name: 'Steve Jobs',
         email: 'jobs@apple.com',
+        document: '780.228.290-05',
+        phone: '(11) 99999-9999',
       },
       payment: '\u00C0 Vista',
+      total_price: '40000',
     }
 
     await deleteOrderByNumber(order.number)
-    await insertOrder({
-      id: crypto.randomUUID(),
-      order_number: order.number,
-      color: 'midnight-black',
-      wheel_type: 'sport',
-      customer_name: order.customer.name,
-      customer_email: order.customer.email,
-      customer_phone: '(11) 99999-9999',
-      customer_cpf: '780.228.290-05',
-      payment_method: 'avista',
-      total_price: '40000',
-      status: order.status,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      optionals: [],
-    })
+    await insertOrder(order)
 
     await app.orderLookup.searchOrder(order.number)
     await app.orderLookup.validateOrderDetails(order)
@@ -90,27 +66,15 @@ test.describe('Consulta de Pedido', () => {
       customer: {
         name: 'Joao Silva',
         email: 'joao@velo.dev',
+        document: '780.228.290-05',
+        phone: '(11) 99999-9999',
       },
       payment: '\u00C0 Vista',
+      total_price: '40000',
     }
 
     await deleteOrderByNumber(order.number)
-    await insertOrder({
-      id: crypto.randomUUID(),
-      order_number: order.number,
-      color: 'lunar-white',
-      wheel_type: 'aero',
-      customer_name: order.customer.name,
-      customer_email: order.customer.email,
-      customer_phone: '(11) 99999-9999',
-      customer_cpf: '780.228.290-05',
-      payment_method: 'avista',
-      total_price: '40000',
-      status: order.status,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      optionals: [],
-    })
+    await insertOrder(order)
 
     await app.orderLookup.searchOrder(order.number)
     await app.orderLookup.validateOrderDetails(order)
