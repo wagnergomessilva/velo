@@ -13,13 +13,13 @@ export function createCheckoutActions(page: Page) {
     confirmarButton: page.getByRole('button', { name: 'Confirmar Pedido' }),
 
     // Alertas de validação
-    nomeAlert: page.locator('//label[text() = "Nome"]/..//p'),
-    sobrenomeAlert: page.locator('//label[text() = "Sobrenome"]/..//p'),
-    emailAlert: page.locator('//label[text() = "Email"]/..//p'),
-    telefoneAlert: page.locator('//label[text() = "Telefone"]/..//p'),
-    cpfAlert: page.locator('//label[text() = "CPF"]/..//p'),
-    lojaAlert: page.locator('//label[text() = "Loja para Retirada"]/..//p'),
-    termosAlert: page.locator('//label[contains(., "Li e aceito")]/..//p')
+    nomeAlert: page.getByTestId('error-name'),
+    sobrenomeAlert: page.getByTestId('error-lastname'),
+    emailAlert: page.getByTestId('error-email'),
+    telefoneAlert: page.getByTestId('error-phone'),
+    cpfAlert: page.getByTestId('error-document'),
+    lojaAlert: page.getByTestId('error-store'),
+    termosAlert: page.getByTestId('error-terms')
   }
 
   return {
